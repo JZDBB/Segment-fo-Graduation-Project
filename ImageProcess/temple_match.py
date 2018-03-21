@@ -12,13 +12,16 @@ class TempleMatch(object):
 
     def read_template(self, template):
         self.templates.append(template)
-        width, height = template.shape[::-1]
-        self.width.append(width)
-        self.height.append(height)
+        # width, height = template.shape[::-1]
+        # self.width.append(width)
+        # self.height.append(height)
 
     def normal_match(self, img, method, threshold, type):
         flag = False
         for template in self.templates:
+            width, height = template.shape[::-1]
+            self.width.append(width)
+            self.height.append(height)
             if type:
             # recignize a picture with a sigle object
                 res = cv2.matchTemplate(img, template, method)
@@ -42,7 +45,7 @@ class TempleMatch(object):
                         self.rect.append(pt)
                     flag = True
 
-        return self.rect, flag
+        return self.rect, self.width, self.height, flag
 
     def sift_match(self, img):
         flag = False
@@ -68,8 +71,6 @@ class TempleMatch(object):
             # Ratio test, to get good matches.
             good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
 
-            canvas = img.copy()
-
             # find homography matrix
             # 当有足够的健壮匹配点对（至少4个）时
             if len(good) > MIN_MATCH_COUNT:
@@ -87,14 +88,15 @@ class TempleMatch(object):
                 pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
                 dst = cv2.perspectiveTransform(pts, M)
                 # 绘制边框
-                cv2.polylines(canvas, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
+                # cv2.polylines(canvas, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
 
                 self.rect.append(np.int32(dst))
+                self.width.append(w)
+                self.height.append(h)
             else:
                 print("Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT))
 
-        return self.rect, flag
-
+        return self.rect, self.width, self.height, flag
 
     def draw_rect(self, img, rect, Color, pixel):
         for rectagle in rect:
