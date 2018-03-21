@@ -7,12 +7,11 @@ img2 = img.copy()
 w, h = template.shape[::-1]
 print(w, h)
 
-methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR',
-            'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
-
 """
  @ recignize a picture with a sigle object
 """
+# methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR',
+#             'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
 # for meth in methods:
 #     img = img2.copy()
 #     #exec 语句用来执行储存在字符串或文件中的Python 语句。
