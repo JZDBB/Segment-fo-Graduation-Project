@@ -1,7 +1,7 @@
 import os
 import cv2
 
-class ReadData(object):
+class Data(object):
 
     def read_images(self, path, mode):
         images = []
@@ -11,6 +11,6 @@ class ReadData(object):
             images.append(cv2.imread(pic_path, mode))
         return images
 
-    def read_files(self):
+    def write_images(self):
         pass
 

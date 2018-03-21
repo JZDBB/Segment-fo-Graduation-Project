@@ -4,10 +4,15 @@ import numpy as np
 class TempleMatch(object):
     def __init__(self):
         self.rect = []
+        self.template = []
+        self.width = []
+        self.height = []
 
     def read_template(self, template):
-        self.template = template
-        self.width, self.height = self.template.shape[::-1]
+        self.template.append(template)
+        width, height = template.shape[::-1]
+        self.width.append(width)
+        self.height.append(height)
 
     def normal_match(self, img, method, threshold, type):
         if type:
@@ -21,14 +26,19 @@ class TempleMatch(object):
                 top_left = max_loc
             # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
             self.rect.append(top_left)
+            flag = True
 
         else:
             res = cv2.matchTemplate(img, self.template, cv2.TM_CCOEFF_NORMED)
-            loc = np.where(res >= threshold)
-            for pt in zip(*loc[::-1]):
-                self.rect.append(pt)
+            if np.max(res)<threshold:
+                flag = False
+            else:
+                loc = np.where(res >= threshold)
+                for pt in zip(*loc[::-1]):
+                    self.rect.append(pt)
+                flag = True
 
-        return self.rect
+        return self.rect, flag
 
     def sift_match(self):
         pass

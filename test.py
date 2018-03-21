@@ -7,6 +7,7 @@ img2 = img.copy()
 w, h = template.shape[::-1]
 print(w, h)
 
+
 """
  @ recignize a picture with a sigle object
 """
@@ -56,4 +57,6 @@ print(w, h)
 # plt.subplot(133),plt.imshow(template,cmap = 'gray')
 # plt.title('template'), plt.xticks([]), plt.yticks([])
 # plt.show()
+
+
 
