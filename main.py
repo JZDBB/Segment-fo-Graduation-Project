@@ -23,18 +23,25 @@ class SegMain(object):
                 img = cv2.resize(segdata, (2500, int(2500 * segdata.shape[0] / segdata.shape[1])))
 
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            # cv2.imshow('', img_gray)
-            # cv2.waitKey(0)
 
             # use the normal template match to recognise its frame   \
             #                                                         >  this need further consider
             # use the SIFT template match to recognise its frame     |
+
+            # normal template match
             self.match.read_templates(templates)
             rect, score, width, height, flag = self.match.normal_match(img_gray, 0, 0.35, False)
             pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
             print(pick_rect, pick_score)
+            # img_rect = self.match.draw_rect(img_gray, pick_rect, 0, 5) # wrong!!
+            # plt.imshow(img_rect, cmap='gray')
+            # plt.show()
+
+            # SIFT template match
 
             # use its frame and picture to segment
+            # draw_rect(self, img_gray, rect, Color, pixel)
+
 
             # save the segment picture
 

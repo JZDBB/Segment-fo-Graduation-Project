@@ -62,6 +62,10 @@ class TempleMatch(object):
         return self.rect, score, self.width, self.height, flag
 
     def sift_match(self, img):
+        """
+        :param img: img need be segmented
+        :return: the rectangle with width and height and sucess or not
+        """
         flag = False
         for template in self.templates:
             # preprocess
@@ -114,6 +118,7 @@ class TempleMatch(object):
 
     def draw_rect(self, img, rect, Color, pixel):
         for rectagle in rect:
-            bottom_right = (rectagle[0] + self.width + pixel, rectagle[1] + self.height + pixel)
-            cv2.rectangle(img, rectagle, bottom_right, Color, 2 * pixel)
+            # bottom_right = (rectagle[0] + self.width + pixel, rectagle[1] + self.height + pixel)
+            x0, y0, x1, y1 = rectagle[0:4]
+            cv2.rectangle(img, (x0, y0), (x1, y1), Color, 2 * pixel)
         return img
