@@ -1,6 +1,6 @@
-# import the necessary packages
 import numpy as np
 import cv2
+
 
 """
     Non-max Suppression Algorithm
@@ -11,7 +11,7 @@ import cv2
 
     @return Rest boxes after nms operation
 """
-def non_max_suppression(bounding_boxes, confidence_score, threshold):
+def nms(bounding_boxes, confidence_score, threshold):
     # If no bounding boxes, return empty list
     if len(bounding_boxes) == 0:
         return [], []
@@ -65,3 +65,47 @@ def non_max_suppression(bounding_boxes, confidence_score, threshold):
         order = order[left]
 
     return picked_boxes, picked_score
+
+
+# Image name
+image_name = 'nms.jpg'
+
+# Bounding boxes
+bounding_boxes = [(187, 82, 337, 317), (150, 67, 305, 282), (246, 121, 368, 304), (10, 30, 20, 50)]
+confidence_score = [0.9, 0.75, 0.8, 0.8]
+
+# Read image
+image = cv2.imread(image_name)
+
+# Copy image as original
+org = image.copy()
+
+# Draw parameters
+font = cv2.FONT_HERSHEY_SIMPLEX
+font_scale = 1
+thickness = 2
+
+# IoU threshold
+threshold = 0.4
+
+# Draw bounding boxes and confidence score
+for (start_x, start_y, end_x, end_y), confidence in zip(bounding_boxes, confidence_score):
+    (w, h), baseline = cv2.getTextSize(str(confidence), font, font_scale, thickness)
+    cv2.rectangle(org, (start_x, start_y - (2 * baseline + 5)), (start_x + w, start_y), (0, 255, 255), -1)
+    cv2.rectangle(org, (start_x, start_y), (end_x, end_y), (0, 255, 255), 2)
+    cv2.putText(org, str(confidence), (start_x, start_y), font, font_scale, (0, 0, 0), thickness)
+
+# Run non-max suppression algorithm
+picked_boxes, picked_score = nms(bounding_boxes, confidence_score, threshold)
+
+# Draw bounding boxes and confidence score after non-maximum supression
+for (start_x, start_y, end_x, end_y), confidence in zip(picked_boxes, picked_score):
+    (w, h), baseline = cv2.getTextSize(str(confidence), font, font_scale, thickness)
+    cv2.rectangle(image, (start_x, start_y - (2 * baseline + 5)), (start_x + w, start_y), (0, 255, 255), -1)
+    cv2.rectangle(image, (start_x, start_y), (end_x, end_y), (0, 255, 255), 2)
+    cv2.putText(image, str(confidence), (start_x, start_y), font, font_scale, (0, 0, 0), thickness)
+
+# Show image
+cv2.imshow('Original', org)
+cv2.imshow('NMS', image)
+cv2.waitKey(0)
