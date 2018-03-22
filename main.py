@@ -6,10 +6,11 @@ class SegMain(object):
     # init
     def __init__(self):
         self.data = data.Data()
+        self.match = temple_match.TempleMatch()
 
     def Segment(self, template_path, segdata_path, result_path):
         # read the template picture
-        template = self.data.read_images(template_path, None)
+        templates = self.data.read_images(template_path, None)
         # read the picture which need segment
         segdatas = self.data.read_images(segdata_path, None)
         # judge its rotate and scale (未完成 思考中)
@@ -22,13 +23,16 @@ class SegMain(object):
                 img = cv2.resize(segdata, (2500, int(2500 * segdata.shape[0] / segdata.shape[1])))
 
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            cv2.imshow('', img_gray)
-            cv2.waitKey(0)
+            # cv2.imshow('', img_gray)
+            # cv2.waitKey(0)
 
             # use the normal template match to recognise its frame   \
             #                                                         >  this need further consider
             # use the SIFT template match to recognise its frame     |
-
+            self.match.read_templates(templates)
+            rect, score, width, height, flag = self.match.normal_match(img_gray, 0, 0.35, False)
+            pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
+            print(pick_rect, pick_score)
 
             # use its frame and picture to segment
 

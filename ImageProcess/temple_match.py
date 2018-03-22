@@ -10,15 +10,26 @@ class TempleMatch(object):
         self.width = []
         self.height = []
 
-    def read_template(self, template):
-        self.templates.append(template)
+    def read_templates(self, templates):
+        for template in templates:
+            self.templates.append(template)
+
         # width, height = template.shape[::-1]
         # self.width.append(width)
         # self.height.append(height)
 
     def normal_match(self, img, method, threshold, type):
+        """
+        :param img: img need be segmented
+        :param method: the Similarity metrics (相似性度量准则)
+        :param threshold: threshould
+        :param type: one object(True) or more objects(False)
+        :return: the rectangle with width and height and sucess or not
+        """
         flag = False
+        score = []
         for template in self.templates:
+            template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
             width, height = template.shape[::-1]
             self.width.append(width)
             self.height.append(height)
@@ -42,10 +53,13 @@ class TempleMatch(object):
                 else:
                     loc = np.where(res >= threshold)
                     for pt in zip(*loc[::-1]):
-                        self.rect.append(pt)
+                        self.rect.append([pt[0], pt[1], pt[0] + width, pt[1] + height])
+                        score.append(res[pt[1], pt[0]])
+                        print(pt)
+                        print(res[pt[1], pt[0]])
                     flag = True
 
-        return self.rect, self.width, self.height, flag
+        return self.rect, score, self.width, self.height, flag
 
     def sift_match(self, img):
         flag = False
