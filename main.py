@@ -42,9 +42,9 @@ class SegMain(object):
             self.match.read_templates(templates)
             rect, flag = self.match.sift_match(img_gray)
             print(rect)
-            # img_rect = self.match.draw_rect(img_gray, rect, 0, 5)
-            # plt.imshow(img_rect, cmap='gray')
-            # plt.show()
+            img_rect = self.match.draw_rect(img_gray, rect, 0, 5)
+            plt.imshow(img_rect, cmap='gray')
+            plt.show()
 
             # save the segment picture
 

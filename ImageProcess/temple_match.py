@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+# from matplotlib.pyplot import plt
 
 MIN_MATCH_COUNT = 4
 
@@ -68,7 +69,6 @@ class TempleMatch(object):
             # preprocess
             gray1 = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
             gray2 = img
-            canvas = img.copy()
             # Create SIFT object
             sift = cv2.xfeatures2d.SIFT_create()
             # Create flann matcher
@@ -84,7 +84,7 @@ class TempleMatch(object):
             matches = sorted(matches, key=lambda x: x[0].distance)
 
             # Ratio test, to get good matches.
-            good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
+            good = [m1 for (m1, m2) in matches if m1.distance < 0.6 * m2.distance]
 
             # find homography matrix
             # 当有足够的健壮匹配点对（至少4个）时
@@ -97,18 +97,16 @@ class TempleMatch(object):
                 # find homography matrix in cv2.RANSAC using good match points
                 M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
                 # 计算图1的畸变，也就是在图2中的对应的位置。
-                h, w = img.shape[:2]
+                h, w = template.shape[:2]
                 pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
                 dst = cv2.perspectiveTransform(pts, M)
                 # 绘制边框
                 # cv2.polylines(canvas, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
-                h, w = template.shape[:2]
-                pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
-                dst = cv2.perspectiveTransform(pts, M)
                 perspectiveM = cv2.getPerspectiveTransform(np.float32(dst), pts)
                 found = cv2.warpPerspective(img, perspectiveM, (w, h))
-                cv2.imwrite("found.png", found)
-                rect.append([perspectiveM])
+                dst = np.int32(dst)
+                cv2.imwrite("./data/result/found.png", found)
+                rect.append([dst[0][0][0], dst[0][0][1], dst[2][0][0] + w, dst[2][0][1] + h])
             else:
                 print("Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT))
 
