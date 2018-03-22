@@ -9,6 +9,7 @@ class SegMain(object):
         self.match = temple_match.TempleMatch()
 
     def Segment(self, template_path, segdata_path, result_path):
+        count = 1
         # read the template picture
         templates = self.data.read_images(template_path, None)
         # read the picture which need segment
@@ -29,19 +30,21 @@ class SegMain(object):
             # use the SIFT template match to recognise its frame     |
 
             # normal template match
-            self.match.read_templates(templates)
-            rect, score, width, height, flag = self.match.normal_match(img_gray, 0, 0.35, False)
-            pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
-            print(pick_rect, pick_score)
-            # img_rect = self.match.draw_rect(img_gray, pick_rect, 0, 5) # wrong!!
+            # self.match.read_templates(templates)
+            # rect, score, flag = self.match.normal_match(img_gray, 0, 0.35, False)
+            # pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
+            # print(pick_rect, pick_score)
+            # img_rect = self.match.draw_rect(img_gray, pick_rect, 0, 5)
             # plt.imshow(img_rect, cmap='gray')
             # plt.show()
 
             # SIFT template match
-
-            # use its frame and picture to segment
-            # draw_rect(self, img_gray, rect, Color, pixel)
-
+            self.match.read_templates(templates)
+            rect, flag = self.match.sift_match(img_gray)
+            print(rect)
+            # img_rect = self.match.draw_rect(img_gray, rect, 0, 5)
+            # plt.imshow(img_rect, cmap='gray')
+            # plt.show()
 
             # save the segment picture
 

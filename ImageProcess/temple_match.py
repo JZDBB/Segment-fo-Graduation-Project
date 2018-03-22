@@ -5,10 +5,7 @@ MIN_MATCH_COUNT = 4
 
 class TempleMatch(object):
     def __init__(self):
-        self.rect = []
         self.templates = []
-        self.width = []
-        self.height = []
 
     def read_templates(self, templates):
         for template in templates:
@@ -28,11 +25,10 @@ class TempleMatch(object):
         """
         flag = False
         score = []
+        rect = []
         for template in self.templates:
             template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
             width, height = template.shape[::-1]
-            self.width.append(width)
-            self.height.append(height)
             if type:
             # recignize a picture with a sigle object
                 res = cv2.matchTemplate(img, template, method)
@@ -43,7 +39,7 @@ class TempleMatch(object):
                 else:
                     top_left = max_loc
                 # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
-                self.rect.append(top_left)
+                rect.append([top_left[0], top_left[1], top_left[0] + width, top_left[1] + height])
                 flag = True
 
             else:
@@ -53,25 +49,26 @@ class TempleMatch(object):
                 else:
                     loc = np.where(res >= threshold)
                     for pt in zip(*loc[::-1]):
-                        self.rect.append([pt[0], pt[1], pt[0] + width, pt[1] + height])
+                        rect.append([pt[0], pt[1], pt[0] + width, pt[1] + height])
                         score.append(res[pt[1], pt[0]])
                         print(pt)
                         print(res[pt[1], pt[0]])
                     flag = True
 
-        return self.rect, score, self.width, self.height, flag
+        return rect, score, flag
 
     def sift_match(self, img):
         """
-        :param img: img need be segmented
+        :param img: img need be segmented (image need be gray)
         :return: the rectangle with width and height and sucess or not
         """
         flag = False
+        rect = []
         for template in self.templates:
             # preprocess
             gray1 = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-            gray2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
+            gray2 = img
+            canvas = img.copy()
             # Create SIFT object
             sift = cv2.xfeatures2d.SIFT_create()
             # Create flann matcher
@@ -99,22 +96,23 @@ class TempleMatch(object):
                 dst_pts = np.float32([kpts2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
                 # find homography matrix in cv2.RANSAC using good match points
                 M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-                # 掩模，用作绘制计算单应性矩阵时用到的点对
-                # matchesMask2 = mask.ravel().tolist()
                 # 计算图1的畸变，也就是在图2中的对应的位置。
                 h, w = img.shape[:2]
                 pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
                 dst = cv2.perspectiveTransform(pts, M)
                 # 绘制边框
                 # cv2.polylines(canvas, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
-
-                self.rect.append(np.int32(dst))
-                self.width.append(w)
-                self.height.append(h)
+                h, w = template.shape[:2]
+                pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
+                dst = cv2.perspectiveTransform(pts, M)
+                perspectiveM = cv2.getPerspectiveTransform(np.float32(dst), pts)
+                found = cv2.warpPerspective(img, perspectiveM, (w, h))
+                cv2.imwrite("found.png", found)
+                rect.append([perspectiveM])
             else:
                 print("Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT))
 
-        return self.rect, self.width, self.height, flag
+        return rect, flag
 
     def draw_rect(self, img, rect, Color, pixel):
         for rectagle in rect:

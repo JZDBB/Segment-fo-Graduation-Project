@@ -26,15 +26,15 @@ class Data(object):
 
         return images
 
-    def write_images(self, path, imgs, rectangles, height, width):
+    def write_images(self, path, name, imgs, rectangles):
         count = 1
         str = "1.png"
         for img in imgs:
             for rect in rectangles:
-                pts = np.float32([[0, 0], [0, height - 1], [width - 1, height - 1], [width - 1, 0]]).reshape(-1, 1, 2)
+                pts = np.float32(rect).reshape(-1, 1, 2)
                 perspectiveM = cv2.getPerspectiveTransform(rect, pts)
-                found = cv2.warpPerspective(img, perspectiveM, (width, height))
-                cv2.imwrite(os.path.join(path, str.replace("1", "%d" % count)), found)
+                found = cv2.warpPerspective(img, perspectiveM, (rect[2]-rect[0], rect[3]-rect[1]))
+                cv2.imwrite(os.path.join(path, str.replace("1", "%s" % str(name*10+count))), found)
                 count = count + 1
 
 
