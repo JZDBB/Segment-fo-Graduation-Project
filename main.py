@@ -1,6 +1,7 @@
 from ImageProcess import temple_match, data, nms
 import matplotlib.pyplot as plt
 import cv2
+import numpy as np
 
 class SegMain(object):
     # init
@@ -14,7 +15,7 @@ class SegMain(object):
         templates = self.data.read_images(template_path, None)
         # read the picture which need segment
         segdatas = self.data.read_images(segdata_path, None)
-        # judge its rotate and scale (未完成 思考中)
+        # judge its rotate and scale (no need)
 
         for segdata in segdatas:
             # ajust its size to a Regulated template
@@ -30,26 +31,27 @@ class SegMain(object):
             # use the SIFT template match to recognise its frame     |
 
             # normal template match
-            # self.match.read_templates(templates)
-            # rect, score, flag = self.match.normal_match(img_gray, 0, 0.35, False)
-            # pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
-            # print(pick_rect, pick_score)
+            self.match.read_templates(templates)
+            rect, score, flag = self.match.normal_match(img_gray, 0, 0.35, False)
+            pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
+            print(pick_rect, pick_score)
+            for rect_found in pick_rect:
+                fillrect = np.array([[[rect_found[0],rect_found[1]], [rect_found[2],rect_found[1]], [rect_found[2],rect_found[3]], [rect_found[0],rect_found[3]]]], dtype = np.int32)
+                cv2.fillPoly(img_gray, fillrect, 255)
             # img_rect = self.match.draw_rect(img_gray, pick_rect, 0, 5)
+            plt.imshow(img_gray, cmap='gray')
+            plt.show()
+
+            # SIFT template match
+            # self.match.read_templates(templates)
+            # rect, flag = self.match.sift_match(img_gray)
+            # print(rect)
+            # img_rect = self.match.draw_rect(img_gray, rect, 0, 5)
             # plt.imshow(img_rect, cmap='gray')
             # plt.show()
 
-            # SIFT template match
-            self.match.read_templates(templates)
-            rect, flag = self.match.sift_match(img_gray)
-            print(rect)
-            img_rect = self.match.draw_rect(img_gray, rect, 0, 5)
-            plt.imshow(img_rect, cmap='gray')
-            plt.show()
-
             # save the segment picture
 
-
-    pass
 
 
 if __name__ == '__main__':
