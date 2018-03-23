@@ -4,22 +4,25 @@ import os
 # from matplotlib.pyplot import plt
 
 MIN_MATCH_COUNT = 4
-BEGIN = [396, 202]
-END = [387, 620]
 
 class TempleMatch(object):
     def __init__(self):
         self.templates = []
 
     def read_templates(self, path, mode):
-        text = np.loadtxt('./data/template.txt')
-        pic_path = os.path.join(path, filename)
-        if mode == None:
-            template = cv2.imread(pic_path)
+        with open('./data/template.txt', 'r') as f:
+            data = f.readlines()  # txt中所有字符串读入data
+            for line in data:
+                mesg = line.split(' ')  # 将单个数据分隔开存好
+                pic_path = os.path.join(path, mesg[0])
+                if mode == None:
+                    template = cv2.imread(pic_path)
 
-            self.templates.append([template, begin, end])
-        else:
-            self.templates.append(cv2.imread(pic_path, mode))
+                else:
+                    template = cv2.imread(pic_path, mode)
+                begin = [int(mesg[1]), int(mesg[2])]
+                end = [int(mesg[3]), int(mesg[4])]
+                self.templates.append([template, begin, end])
 
         # width, height = template.shape[::-1]
         # self.width.append(width)
@@ -36,8 +39,11 @@ class TempleMatch(object):
         flag = False
         score = []
         rect = []
-        for template in self.templates:
-            template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+        for template_line in self.templates:
+
+            template = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
+            begin = template_line[1]
+            end = template_line[2]
             width, height = template.shape[::-1]
             if type:
             # recignize a picture with a sigle object
@@ -60,7 +66,7 @@ class TempleMatch(object):
                 else:
                     loc = np.where(res >= threshold)
                     for pt in zip(*loc[::-1]):
-                        rect.append([pt[0] - BEGIN[0], pt[1] - BEGIN[1], pt[0] + width + END[0], pt[1] + height + END[1]])
+                        rect.append([pt[0] - begin[0], pt[1] - begin[1], pt[0] + width + end[0], pt[1] + height + end[1]])
                         score.append(res[pt[1], pt[0]])
                         print(pt)
                         print(res[pt[1], pt[0]])

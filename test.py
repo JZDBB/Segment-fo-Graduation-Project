@@ -2,16 +2,21 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+with open('./data/template.txt', 'r') as f:
+    data = f.readlines()  # txt中所有字符串读入data
+    for line in data:
+        odom = line.split(' ')  # 将单个数据分隔开存好
+        print(odom)
 
 
-a = np.array([[[10,20], [100,20], [100,200], [10,200]]], dtype = np.int32)
-b = np.array([[[100,100], [200,230], [150,200], [100,220]]], dtype = np.int32)
-print(a.shape)
-im = np.zeros([240, 320], dtype = np.uint8)
-cv2.polylines(im, b, 1, 255)
-cv2.fillPoly(im, a, 255)
-plt.imshow(im, cmap='gray')
-plt.show()
+# a = np.array([[[10,20], [100,20], [100,200], [10,200]]], dtype = np.int32)
+# b = np.array([[[100,100], [200,230], [150,200], [100,220]]], dtype = np.int32)
+# print(a.shape)
+# im = np.zeros([240, 320], dtype = np.uint8)
+# cv2.polylines(im, b, 1, 255)
+# cv2.fillPoly(im, a, 255)
+# plt.imshow(im, cmap='gray')
+# plt.show()
 
 
 
