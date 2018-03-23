@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 # from matplotlib.pyplot import plt
 
 MIN_MATCH_COUNT = 4
@@ -10,9 +11,15 @@ class TempleMatch(object):
     def __init__(self):
         self.templates = []
 
-    def read_templates(self, templates):
-        for template in templates:
-            self.templates.append(template)
+    def read_templates(self, path, mode):
+        text = np.loadtxt('./data/template.txt')
+        pic_path = os.path.join(path, filename)
+        if mode == None:
+            template = cv2.imread(pic_path)
+
+            self.templates.append([template, begin, end])
+        else:
+            self.templates.append(cv2.imread(pic_path, mode))
 
         # width, height = template.shape[::-1]
         # self.width.append(width)

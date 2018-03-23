@@ -12,7 +12,7 @@ class SegMain(object):
     def Segment(self, template_path, segdata_path, result_path):
         count = 1
         # read the template picture
-        templates = self.data.read_images(template_path, None)
+        # templates = self.data.read_images(template_path, None)
         # read the picture which need segment
         segdatas = self.data.read_images(segdata_path, None)
         # judge its rotate and scale (no need)
@@ -20,6 +20,7 @@ class SegMain(object):
         for segdata in segdatas:
             # ajust its size to a Regulated template
             ratio0 = 1.0
+            img = segdata
             if segdata.shape[1] < 2500:
                 ratio0 = segdata.shape[1] / 2500.0
                 img = cv2.resize(segdata, (2500, int(2500 * segdata.shape[0] / segdata.shape[1])))
@@ -31,8 +32,8 @@ class SegMain(object):
             # use the SIFT template match to recognise its frame     |
 
             # normal template match
-            self.match.read_templates(templates)
-            rect, score, flag = self.match.normal_match(img_gray, 0, 0.60, False)
+            self.match.read_templates(template_path, None)
+            rect, score, flag = self.match.normal_match(img_gray, 0, 0.476, False)
             pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
             print(pick_rect, pick_score)
             for rect_found in pick_rect:
