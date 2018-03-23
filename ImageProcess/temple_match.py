@@ -3,6 +3,8 @@ import numpy as np
 # from matplotlib.pyplot import plt
 
 MIN_MATCH_COUNT = 4
+BEGIN = [396, 202]
+END = [387, 620]
 
 class TempleMatch(object):
     def __init__(self):
@@ -45,12 +47,13 @@ class TempleMatch(object):
 
             else:
                 res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+                print(np.max(res))
                 if np.max(res)<threshold:
                     flag = False
                 else:
                     loc = np.where(res >= threshold)
                     for pt in zip(*loc[::-1]):
-                        rect.append([pt[0], pt[1], pt[0] + width, pt[1] + height])
+                        rect.append([pt[0] - BEGIN[0], pt[1] - BEGIN[1], pt[0] + width + END[0], pt[1] + height + END[1]])
                         score.append(res[pt[1], pt[0]])
                         print(pt)
                         print(res[pt[1], pt[0]])

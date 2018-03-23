@@ -32,7 +32,7 @@ class SegMain(object):
 
             # normal template match
             self.match.read_templates(templates)
-            rect, score, flag = self.match.normal_match(img_gray, 0, 0.35, False)
+            rect, score, flag = self.match.normal_match(img_gray, 0, 0.60, False)
             pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
             print(pick_rect, pick_score)
             for rect_found in pick_rect:
@@ -41,6 +41,7 @@ class SegMain(object):
             # img_rect = self.match.draw_rect(img_gray, pick_rect, 0, 5)
             plt.imshow(img_gray, cmap='gray')
             plt.show()
+            print("ok")
 
             # SIFT template match
             # self.match.read_templates(templates)
