@@ -11,24 +11,41 @@ class TempleMatch(object):
     def __init__(self):
         self.templates = []
 
-    def read_templates(self, path, mode):
-        with open('./data/template.txt', 'r') as f:
-            data = f.readlines()  # txt中所有字符串读入data
-            for line in data:
-                mesg = line.split(' ')  # 将单个数据分隔开存好
-                pic_path = os.path.join(path, mesg[0])
-                if mode == None:
-                    template = cv2.imread(pic_path)
+    def read_templates(self, path, mode, Norm):
+        self.templates = []
+        if Norm:
+            with open('./data/template.txt', 'r') as f:
+                data = f.readlines()  # txt中所有字符串读入data
+                for line in data:
+                    mesg = line.split(' ')  # 将单个数据分隔开存好
+                    pic_path = os.path.join(path, mesg[0])
+                    if mode == None:
+                        template = cv2.imread(pic_path)
 
-                else:
-                    template = cv2.imread(pic_path, mode)
-                begin = [int(mesg[1]), int(mesg[2])]
-                end = [int(mesg[3]), int(mesg[4])]
-                self.templates.append([template, begin, end])
+                    else:
+                        template = cv2.imread(pic_path, mode)
+                    begin = [int(mesg[1]), int(mesg[2])]
+                    end = [int(mesg[3]), int(mesg[4])]
+                    self.templates.append([template, begin, end])
+        else:
+            with open('./data/template_SIFT.txt', 'r') as f:
+                data = f.readlines()  # txt中所有字符串读入data
+                for line in data:
+                    mesg = line.split(' ')  # 将单个数据分隔开存好
+                    pic_path = os.path.join(path, mesg[0])
+                    if mode == None:
+                        template = cv2.imread(pic_path)
 
-        # width, height = template.shape[::-1]
-        # self.width.append(width)
-        # self.height.append(height)
+                    else:
+                        template = cv2.imread(pic_path, mode)
+                    A = mat([[393, 212, 1],
+                         [393, 313, 1],
+                         [784, 313, 1]])
+                    A1 = mat([[0, 0, 1],
+                          [0, 884, 1],
+                          [1168, 884, 1],
+                          [1168, 0, 1]])
+                    self.templates.append([template, A, A1])
 
     def normal_match(self, img, method, threshold, type):
         """
@@ -87,6 +104,8 @@ class TempleMatch(object):
             # preprocess
             gray1 = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
             gray2 = img
+            A = template_line[1]
+            A1 = template_line[2]
             # Create SIFT object
             sift = cv2.xfeatures2d.SIFT_create()
             # Create flann matcher
@@ -106,37 +125,22 @@ class TempleMatch(object):
             canvas = img.copy()
             # find homography matrix
             # 当有足够的健壮匹配点对（至少4个）时
-            if len(good) > MIN_MATCH_COUNT:
+            while len(good) > MIN_MATCH_COUNT:
                 flag = True
-                # 从匹配中提取出对应点对
-                # (queryIndex for the small object, trainIndex for the scene )
                 src_pts = np.float32([kpts1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
                 dst_pts = np.float32([kpts2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
-                # find homography matrix in cv2.RANSAC using good match points
+
                 M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-                # 计算图1的畸变，也就是在图2中的对应的位置。
-                h, w = template.shape[:2]
+
+                h, w = gray1.shape[:2]
                 pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
                 dst = cv2.perspectiveTransform(pts, M)
-                # 绘制边框
-                # cv2.polylines(canvas, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
-                # perspectiveM = cv2.getPerspectiveTransform(np.float32(dst), pts)
-                # found = cv2.warpPerspective(img, perspectiveM, (w, h))
-                # dst = np.int32(dst)
-                # cv2.imwrite("./data/result/found.png", found)
-                # rect.append([dst[0][0][0], dst[0][0][1], dst[2][0][0] + w, dst[2][0][1] + h])
 
-                A = mat([[393, 212, 1],
-                         [393, 313, 1],
-                         [784, 313, 1]])
+
                 B = mat([[np.float(dst[0][0][0]), np.float(dst[0][0][1])],
                          [np.float(dst[1][0][0]), np.float(dst[1][0][1])],
                          [np.float(dst[2][0][0]), np.float(dst[2][0][1])]])
                 X = (A.I) * B
-                A1 = mat([[0, 0, 1],
-                          [0, 884, 1],
-                          [1168, 884, 1],
-                          [1168, 0, 1]])
                 result = A1 * X
 
                 pt1 = list([[result[0][:, 0].max(), result[0][:, 1].max()]])
@@ -163,9 +167,6 @@ class TempleMatch(object):
                 ## (6) Ratio test, to get good matches.
                 good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
                 print(len(good))
-
-            else:
-                print("Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT))
 
 
         return rect, flag
