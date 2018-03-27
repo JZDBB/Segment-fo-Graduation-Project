@@ -1,9 +1,11 @@
 import cv2
 import numpy as np
+from numpy import *
 import os
-# from matplotlib.pyplot import plt
+import matplotlib.pyplot as plt
 
-MIN_MATCH_COUNT = 4
+
+MIN_MATCH_COUNT = 15
 
 class TempleMatch(object):
     def __init__(self):
@@ -81,9 +83,9 @@ class TempleMatch(object):
         """
         flag = False
         rect = []
-        for template in self.templates:
+        for template_line in self.templates:
             # preprocess
-            gray1 = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+            gray1 = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
             gray2 = img
             # Create SIFT object
             sift = cv2.xfeatures2d.SIFT_create()
@@ -101,7 +103,7 @@ class TempleMatch(object):
 
             # Ratio test, to get good matches.
             good = [m1 for (m1, m2) in matches if m1.distance < 0.6 * m2.distance]
-
+            canvas = img.copy()
             # find homography matrix
             # 当有足够的健壮匹配点对（至少4个）时
             if len(good) > MIN_MATCH_COUNT:
@@ -118,19 +120,52 @@ class TempleMatch(object):
                 dst = cv2.perspectiveTransform(pts, M)
                 # 绘制边框
                 # cv2.polylines(canvas, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
-                perspectiveM = cv2.getPerspectiveTransform(np.float32(dst), pts)
-                found = cv2.warpPerspective(img, perspectiveM, (w, h))
-                dst = np.int32(dst)
-                cv2.imwrite("./data/result/found.png", found)
-                rect.append([dst[0][0][0], dst[0][0][1], dst[2][0][0] + w, dst[2][0][1] + h])
+                # perspectiveM = cv2.getPerspectiveTransform(np.float32(dst), pts)
+                # found = cv2.warpPerspective(img, perspectiveM, (w, h))
+                # dst = np.int32(dst)
+                # cv2.imwrite("./data/result/found.png", found)
+                # rect.append([dst[0][0][0], dst[0][0][1], dst[2][0][0] + w, dst[2][0][1] + h])
+
+                A = mat([[393, 212, 1],
+                         [393, 313, 1],
+                         [784, 313, 1]])
+                B = mat([[np.float(dst[0][0][0]), np.float(dst[0][0][1])],
+                         [np.float(dst[1][0][0]), np.float(dst[1][0][1])],
+                         [np.float(dst[2][0][0]), np.float(dst[2][0][1])]])
+                X = (A.I) * B
+                A1 = mat([[0, 0, 1],
+                          [0, 884, 1],
+                          [1168, 884, 1],
+                          [1168, 0, 1]])
+                result = A1 * X
+
+                pt1 = list([[result[0][:, 0].max(), result[0][:, 1].max()]])
+                pt2 = list([[result[1][:, 0].max(), result[1][:, 1].max()]])
+                pt3 = list([[result[2][:, 0].max(), result[2][:, 1].max()]])
+                pt4 = list([[result[3][:, 0].max(), result[3][:, 1].max()]])
+                dst_result = array([pt1, pt2, pt3, pt4])
+                print(dst_result)
+
+                # cv2.polylines(canvas, [np.int32(dst_result)], True, (0, 255, 0), 3, cv2.LINE_AA)
+                cv2.fillPoly(gray2, [np.int32(dst_result)], 255)
+                plt.imshow(gray2)
+                plt.show()
+
+                rect.append(dst_result)
+
+                kpts2, descs2 = sift.detectAndCompute(gray2, None)
+
+                ## (5) knnMatch to get Top2
+                matches = matcher.knnMatch(descs1, descs2, 2)
+                # Sort by their distance.
+                matches = sorted(matches, key=lambda x: x[0].distance)
+
+                ## (6) Ratio test, to get good matches.
+                good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
+                print(len(good))
+
             else:
                 print("Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT))
 
-        return rect, flag
 
-    def draw_rect(self, img, rect, Color, pixel):
-        for rectagle in rect:
-            # bottom_right = (rectagle[0] + self.width + pixel, rectagle[1] + self.height + pixel)
-            x0, y0, x1, y1 = rectagle[0:4]
-            cv2.rectangle(img, (x0, y0), (x1, y1), Color, 2 * pixel)
-        return img
+        return rect, flag

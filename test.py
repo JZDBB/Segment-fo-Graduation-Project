@@ -3,10 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-
-
 """
-    read txt data
+    @ read txt data
 """
 # with open('./data/template.txt', 'r') as f:
 #     data = f.readlines()  # txt中所有字符串读入data
@@ -15,7 +13,7 @@ import matplotlib.pyplot as plt
 #         print(odom)
 
 """
-    draw a recotangle (filled and not filled)
+    @ draw a recotangle (filled and not filled)
 """
 # a = np.array([[[10,20], [100,20], [100,200], [10,200]]], dtype = np.int32)
 # b = np.array([[[100,100], [200,230], [150,200], [100,220]]], dtype = np.int32)
