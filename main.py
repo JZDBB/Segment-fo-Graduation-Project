@@ -2,13 +2,14 @@ from ImageProcess import temple_match, data, nms
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+import os
 
 class SegMain(object):
     # init
     def __init__(self):
         self.data = data.Data()
         self.match = temple_match.TempleMatch()
-        self.rect = []
+        self.rects = []
 
     def Segment(self, template_path, segdata_path, result_path):
         count = 1
@@ -17,8 +18,9 @@ class SegMain(object):
         # read the picture which need segment
         segdatas = self.data.read_images(segdata_path, None)
         # judge its rotate and scale (no need)
-
+        count = 0
         for segdata in segdatas:
+            count = count + 1
             # ajust its size to a Regulated template
             ratio0 = 1.0
             img = segdata
@@ -44,7 +46,7 @@ class SegMain(object):
                                       [rect_found[2], rect_found[3]],
                                       [rect_found[0], rect_found[3]]]], dtype = np.int32)
                 cv2.fillPoly(img_gray, fillrect, 255)
-                self.rect.append([[[rect_found[0], rect_found[1]],
+                self.rects.append([[[rect_found[0], rect_found[1]],
                                    [rect_found[2], rect_found[1]],
                                    [rect_found[2], rect_found[3]],
                                    [rect_found[0], rect_found[3]]]])
@@ -57,10 +59,18 @@ class SegMain(object):
             rect_SIFT, flag = self.match.sift_match(img_gray)
             print(rect_SIFT)
             for rect_found in rect_SIFT:
-                self.rect.append(rect_found)
+                self.rects.append(rect_found)
 
 
             # save the segment picture data
+            # res_path = os.path.join(result_path, 'result.txt')
+            # with open(res_path, 'w') as f:
+            #     for rect in self.rects:
+            #         f.write(str(rect) + '\n')
+            #     f.close()
+
+            # test the accuracy (IoU)
+
 
 
 
