@@ -34,33 +34,30 @@ class SegMain(object):
             # use the SIFT template match to recognise its frame     |
 
             # normal template match
-            # self.match.read_templates(template_path, None, True)
-            # rect, score, flag = self.match.normal_match(img_gray, 0, 0.476, False)
-            # pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
-            # print(pick_rect, pick_score)
-            # for rect_found in pick_rect:
-            #     fillrect = np.array([[[rect_found[0], rect_found[1]],
-            #                           [rect_found[2], rect_found[1]],
-            #                           [rect_found[2], rect_found[3]],
-            #                           [rect_found[0], rect_found[3]]]], dtype = np.int32)
-            #     cv2.fillPoly(img_gray, fillrect, 255)
-            #     self.rect.append([[[rect_found[0], rect_found[1]],
-            #                        [rect_found[2], rect_found[1]],
-            #                        [rect_found[2], rect_found[3]],
-            #                        [rect_found[0], rect_found[3]]]])
-            # plt.imshow(img_gray, cmap='gray')
-            # plt.show()
-            # print("ok")
-
-            # SIFT template match
-            self.match.read_templates(template_path, None, False)
-            rect, flag = self.match.sift_match(img_gray)
-            print(rect)
-            for rect_found in rect:
+            self.match.read_templates(template_path, None, True)
+            rect, score, flag = self.match.normal_match(img_gray, 0, 0.476, False)
+            pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
+            print(pick_rect, pick_score)
+            for rect_found in pick_rect:
+                fillrect = np.array([[[rect_found[0], rect_found[1]],
+                                      [rect_found[2], rect_found[1]],
+                                      [rect_found[2], rect_found[3]],
+                                      [rect_found[0], rect_found[3]]]], dtype = np.int32)
+                cv2.fillPoly(img_gray, fillrect, 255)
                 self.rect.append([[[rect_found[0], rect_found[1]],
                                    [rect_found[2], rect_found[1]],
                                    [rect_found[2], rect_found[3]],
                                    [rect_found[0], rect_found[3]]]])
+            plt.imshow(img_gray, cmap='gray')
+            plt.show()
+            print("ok")
+
+            # SIFT template match
+            self.match.read_templates(template_path, None, False)
+            rect_SIFT, flag = self.match.sift_match(img_gray)
+            print(rect_SIFT)
+            for rect_found in rect_SIFT:
+                self.rect.append(rect_found)
 
 
             # save the segment picture data

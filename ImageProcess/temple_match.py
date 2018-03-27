@@ -38,13 +38,13 @@ class TempleMatch(object):
 
                     else:
                         template = cv2.imread(pic_path, mode)
-                    A = mat([[393, 212, 1],
-                         [393, 313, 1],
-                         [784, 313, 1]])
+                    A = mat([[int(mesg[1]), int(mesg[2]), 1],
+                             [int(mesg[1]), int(mesg[4]), 1],
+                             [int(mesg[3]), int(mesg[4]), 1]])
                     A1 = mat([[0, 0, 1],
-                          [0, 884, 1],
-                          [1168, 884, 1],
-                          [1168, 0, 1]])
+                              [0, int(mesg[6]), 1],
+                              [int(mesg[5]), int(mesg[6]), 1],
+                              [int(mesg[5]), 0, 1]])
                     self.templates.append([template, A, A1])
 
     def normal_match(self, img, method, threshold, type):
@@ -152,9 +152,8 @@ class TempleMatch(object):
 
                 # cv2.polylines(canvas, [np.int32(dst_result)], True, (0, 255, 0), 3, cv2.LINE_AA)
                 cv2.fillPoly(gray2, [np.int32(dst_result)], 255)
-                plt.imshow(gray2)
-                plt.show()
-
+                # plt.imshow(gray2)
+                # plt.show()
                 rect.append(dst_result)
 
                 kpts2, descs2 = sift.detectAndCompute(gray2, None)
@@ -167,6 +166,5 @@ class TempleMatch(object):
                 ## (6) Ratio test, to get good matches.
                 good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
                 print(len(good))
-
 
         return rect, flag

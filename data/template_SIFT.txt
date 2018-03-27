@@ -1,1 +1,1 @@
-template1.jpg 396 202 387 620
+template1.jpg 393 212 784 313 1168 884
