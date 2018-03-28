@@ -1,6 +1,19 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy import *
+
+def debug(im):
+    im = im.copy()
+    im = im.I
+    print(type(im))
+    print(im)
+    return im
+
+img = array([[0, 0, 0],
+            [1, 2, 1]])
+a = debug(img)
+print(img)
 
 
 """

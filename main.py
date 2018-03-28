@@ -21,6 +21,7 @@ class SegMain(object):
         count = 0
         for segdata in segdatas:
             count = count + 1
+
             # ajust its size to a Regulated template
             ratio0 = 1.0
             img = segdata

@@ -63,7 +63,7 @@ class TempleMatch(object):
             template = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
             begin = template_line[1]
             end = template_line[2]
-            width, height = template.shape[::-1]
+            height, width = template.shape[::-1]
             if type:
             # recignize a picture with a sigle object
                 res = cv2.matchTemplate(img, template, method)
