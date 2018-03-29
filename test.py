@@ -3,6 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import *
 
+
+
+"""
+python是解析型语言和C++等编译型语言的区别：
+编译型：全局变量必须在使用之前定义
+解析型：是按照执行顺序编译，因此变量只需在运行顺序前定义即可。
+"""
+
 def debug(im):
     im = im.copy()
     im = im.I
