@@ -63,7 +63,7 @@ class TempleMatch(object):
             template = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
             begin = template_line[1]
             end = template_line[2]
-            height, width = template.shape[::-1]
+            width, height = template.shape[::-1]  # need debug
             if type:
             # recignize a picture with a sigle object
                 res = cv2.matchTemplate(img, template, method)
@@ -154,7 +154,7 @@ class TempleMatch(object):
                 cv2.fillPoly(gray2, [np.int32(dst_result)], 255)
                 # plt.imshow(gray2)
                 # plt.show()
-                rect.append(dst_result)
+                rect.append(np.int32(dst_result))
 
                 kpts2, descs2 = sift.detectAndCompute(gray2, None)
 

@@ -2,6 +2,7 @@ from ImageProcess import temple_match, data, nms
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+from numpy import *
 import os
 
 class SegMain(object):
@@ -47,12 +48,12 @@ class SegMain(object):
                                       [rect_found[2], rect_found[3]],
                                       [rect_found[0], rect_found[3]]]], dtype = np.int32)
                 cv2.fillPoly(img_gray, fillrect, 255)
-                self.rects.append([[[rect_found[0], rect_found[1]],
-                                   [rect_found[2], rect_found[1]],
-                                   [rect_found[2], rect_found[3]],
-                                   [rect_found[0], rect_found[3]]]])
-            plt.imshow(img_gray, cmap='gray')
-            plt.show()
+                self.rects.append(array([[[rect_found[0], rect_found[1]],
+                                          [rect_found[2], rect_found[1]],
+                                          [rect_found[2], rect_found[3]],
+                                          [rect_found[0], rect_found[3]]]]))
+            # plt.imshow(img_gray, cmap='gray')
+            # plt.show()
             print("ok")
 
             # SIFT template match
@@ -60,8 +61,21 @@ class SegMain(object):
             rect_SIFT, flag = self.match.sift_match(img_gray)
             print(rect_SIFT)
             for rect_found in rect_SIFT:
-                self.rects.append(rect_found)
+                self.rects.append(array([[rect_found[0][0],
+                                          rect_found[1][0],
+                                          rect_found[2][0],
+                                          rect_found[3][0]]]))
 
+            for rect_draw in self.rects:
+                cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
+
+            plt.imshow(canvas)
+            plt.show()
+
+            filename =  result_path + str(count) + '.jpg'
+            cv2.imwrite(filename, canvas)
+
+            self.rects = []
 
             # save the segment picture data
             # res_path = os.path.join(result_path, 'result.txt')
