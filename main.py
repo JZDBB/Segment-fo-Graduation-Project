@@ -69,8 +69,8 @@ class SegMain(object):
             for rect_draw in self.rects:
                 cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
 
-            plt.imshow(canvas)
-            plt.show()
+            # plt.imshow(canvas)
+            # plt.show()
 
             filename =  result_path + str(count) + '.jpg'
             cv2.imwrite(filename, canvas)
