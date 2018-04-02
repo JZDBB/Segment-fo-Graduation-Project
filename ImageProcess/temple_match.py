@@ -79,7 +79,7 @@ class TempleMatch(object):
 
             else:
                 res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-                print(np.max(res))
+                # print(np.max(res))
                 if np.max(res)<threshold:
                     flag = False
                 else:
@@ -87,8 +87,8 @@ class TempleMatch(object):
                     for pt in zip(*loc[::-1]):
                         rect.append([pt[0] - begin[0], pt[1] - begin[1], pt[0] + width + end[0], pt[1] + height + end[1]])
                         score.append(res[pt[1], pt[0]])
-                        print(pt)
-                        print(res[pt[1], pt[0]])
+                        # print(pt)
+                        # print(res[pt[1], pt[0]])
                     flag = True
 
         return rect, score, flag
@@ -148,7 +148,7 @@ class TempleMatch(object):
                 pt3 = list([[result[2][:, 0].max(), result[2][:, 1].max()]])
                 pt4 = list([[result[3][:, 0].max(), result[3][:, 1].max()]])
                 dst_result = array([pt1, pt2, pt3, pt4])
-                print(dst_result)
+                # print(dst_result)
 
                 # cv2.polylines(canvas, [np.int32(dst_result)], True, (0, 255, 0), 3, cv2.LINE_AA)
                 cv2.fillPoly(gray2, [np.int32(dst_result)], 255)
@@ -165,6 +165,6 @@ class TempleMatch(object):
 
                 ## (6) Ratio test, to get good matches.
                 good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
-                print(len(good))
+                # print(len(good))
 
         return rect, flag

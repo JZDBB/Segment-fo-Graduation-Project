@@ -22,6 +22,7 @@ class SegMain(object):
         # count = 0
         # for segdata in segdatas:
         #     count = count + 1
+        accuracy = []
         with open('./data/data.txt', 'r') as f:
             data = f.readlines()  # txt中所有字符串读入data
             for line in data:
@@ -30,7 +31,7 @@ class SegMain(object):
                 pic_path = mesg[0]
                 mesgs = mesg[1].split(';')
                 test_rects = []
-                print(len(mesgs))
+                # print(len(mesgs))
                 for i in range(len(mesgs)-1):
                     m = mesgs[i].split(' ')
                     test_rects.append(array([int(m[0]), int(m[1]), int(m[2]), int(m[3])]))
@@ -53,7 +54,7 @@ class SegMain(object):
                 self.match.read_templates(template_path, None, True)
                 rect, score, flag = self.match.normal_match(img_gray, 0, 0.476, False)
                 pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
-                print(pick_rect, pick_score)
+                # print(pick_rect, pick_score)
                 for rect_found in pick_rect:
                     fillrect = np.array([[[rect_found[0], rect_found[1]],
                                           [rect_found[2], rect_found[1]],
@@ -66,12 +67,12 @@ class SegMain(object):
                                               [rect_found[0], rect_found[3]]]]))
                 # plt.imshow(img_gray, cmap='gray')
                 # plt.show()
-                print("ok")
+                # print("ok")
 
                 # SIFT template match
                 self.match.read_templates(template_path, None, False)
                 rect_SIFT, flag = self.match.sift_match(img_gray)
-                print(rect_SIFT)
+                # print(rect_SIFT)
                 for rect_found in rect_SIFT:
                     self.rects.append(array([[rect_found[0][0],
                                               rect_found[1][0],
@@ -82,8 +83,8 @@ class SegMain(object):
                 for rect_draw in rects:
                     cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
 
-                # for rect_draw in test_rects:
-                #     cv2.rectangle(canvas, (rect_draw[0], rect_draw[1]), (rect_draw[2], rect_draw[3]),(255,0,0),3)
+                for rect_draw in test_rects:
+                    cv2.rectangle(canvas, (rect_draw[0], rect_draw[1]), (rect_draw[2], rect_draw[3]),(0,0,255),3)
                 # plt.imshow(canvas)
                 # plt.show()
 
@@ -103,8 +104,10 @@ class SegMain(object):
                     test_rect = test_rects[i]
                     for rect in self.rects:
                         iou.append(IoU.calculateIoU(test_rect, (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
+                    print('accuracy: ' + str(max(iou)))
+                    accuracy.append(max(iou))
 
-                    
+        print('total accuracy: ' + str(mean(accuracy)))
 
 
 

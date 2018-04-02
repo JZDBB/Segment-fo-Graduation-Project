@@ -3,6 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import *
 
+"""
+ get list mean
+"""
+
+
+a = []
+a.append(1.2)
+a.append(1.8)
+a.append(1.9)
+print(mean(a))
 
 
 """
@@ -11,17 +21,17 @@ python是解析型语言和C++等编译型语言的区别：
 解析型：是按照执行顺序编译，因此变量只需在运行顺序前定义即可。
 """
 
-def debug(im):
-    im = im.copy()
-    im = im.I
-    print(type(im))
-    print(im)
-    return im
-
-img = array([[0, 0, 0],
-            [1, 2, 1]])
-a = debug(img)
-print(img)
+# def debug(im):
+#     im = im.copy()
+#     im = im.I
+#     print(type(im))
+#     print(im)
+#     return im
+#
+# img = array([[0, 0, 0],
+#             [1, 2, 1]])
+# a = debug(img)
+# print(img)
 
 
 """
