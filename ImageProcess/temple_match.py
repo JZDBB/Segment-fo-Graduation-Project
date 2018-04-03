@@ -17,6 +17,7 @@ class TempleMatch(object):
             with open('./data/template.txt', 'r') as f:
                 data = f.readlines()  # txt中所有字符串读入data
                 for line in data:
+                    line.replace('\n', '')
                     mesg = line.split(' ')  # 将单个数据分隔开存好
                     pic_path = os.path.join(path, mesg[0])
                     if mode == None:
@@ -26,7 +27,7 @@ class TempleMatch(object):
                         template = cv2.imread(pic_path, mode)
                     begin = [int(mesg[1]), int(mesg[2])]
                     end = [int(mesg[3]), int(mesg[4])]
-                    threshold = int(mesg[5])
+                    threshold = float(mesg[5])
                     self.templates.append([template, begin, end, threshold])
         else:
             with open('./data/template_SIFT.txt', 'r') as f:
