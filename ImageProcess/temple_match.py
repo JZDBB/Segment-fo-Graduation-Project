@@ -26,7 +26,8 @@ class TempleMatch(object):
                         template = cv2.imread(pic_path, mode)
                     begin = [int(mesg[1]), int(mesg[2])]
                     end = [int(mesg[3]), int(mesg[4])]
-                    self.templates.append([template, begin, end])
+                    threshold = int(mesg[5])
+                    self.templates.append([template, begin, end, threshold])
         else:
             with open('./data/template_SIFT.txt', 'r') as f:
                 data = f.readlines()  # txt中所有字符串读入data
@@ -47,7 +48,7 @@ class TempleMatch(object):
                               [int(mesg[5]), 0, 1]])
                     self.templates.append([template, A, A1])
 
-    def normal_match(self, img, method, threshold, type):
+    def normal_match(self, img, method, type):
         """
         :param img: img need be segmented
         :param method: the Similarity metrics (相似性度量准则)
@@ -63,6 +64,7 @@ class TempleMatch(object):
             template = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
             begin = template_line[1]
             end = template_line[2]
+            threshold = template_line[3]
             width, height = template.shape[::-1]  # need debug
             if type:
             # recignize a picture with a sigle object
