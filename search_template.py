@@ -7,6 +7,7 @@ import numpy as np
 path_model = './data/template/template_model/model.jpg'
 rects = []
 img_tem = cv2.imread(path_model, 0)
+height, width = shape(img_tem)
 img = array(Image.open(path_model))
 imshow(img)
 print('Please click 2 points')
@@ -46,10 +47,14 @@ for rect in rects:
         continue
 
 cv2.imwrite('template.jpg', img_tem[tempalte[0][0]:tempalte[1][0], tempalte[0][1]:tempalte[1][1]])
-with open('./data/data.txt', 'a') as f:
+with open('./data/template.txt', 'a') as f:
     f.write('\n')
-    f.write('template.jpg')
+    f.write('template.jpg' + ' ' + str(tempalte[0][0]) + ' ' + str(tempalte[0][1]) + ' ' + str(width - tempalte[1][0]) + ' ' + str(height - tempalte[1][1]))
     f.close()
 
+with open('./data/template_SIFT.txt', 'a') as f:
+    f.write('\n')
+    f.write('template.jpg' + ' ' + str(tempalte[0][0]) + ' ' + str(tempalte[0][1]) + ' ' + str(tempalte[1][0]) + ' ' + str(tempalte[1][1]) + ' ' + str(width) + ' ' + str(height))
+    f.close()
 
 
