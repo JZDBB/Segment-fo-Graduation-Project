@@ -29,7 +29,7 @@ for filename in filenames:
 
     # rects.append(np.int32(array([list(x[0]),list(x[1]),list(x[2]),list(x[3])])))
 
-    with open('./data/data.txt', 'a') as f:
+    with open('./data/nms.txt', 'a') as f:
         f.write(pic_path + ':')
         for rect in rects:
             # pt1, pt2, pt3, pt4 = str(rect[0][0]) + ' ' + str(rect[0][1]), str(rect[1][0]) + ' ' + str(rect[1][1]), str(
