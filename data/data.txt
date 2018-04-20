@@ -1,1 +1,9 @@
-./data/segmentData/test.jpg:321 363 1490 1265;278 1419 2138 2490;
+./data/segmentData/59265.jpg:476 529 2299 1501;497 1820 1668 2721;
+./data/segmentData/63475.jpg:8 80 3047 1870;
+./data/segmentData/63476.jpg:183 345 3236 2086;
+./data/segmentData/63477.jpg:19 74 3149 1992;
+./data/segmentData/63478.jpg:522 263 3089 1889;
+./data/segmentData/63479.jpg:515 221 3082 1847;
+./data/segmentData/63480.jpg:614 459 2308 3175;
+./data/segmentData/63481.jpg:485 441 2243 3295;
+./data/segmentData/63521.jpg:651 478 2280 3193;

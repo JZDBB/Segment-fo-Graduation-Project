@@ -6,6 +6,7 @@ import numpy as np
 
 path_model = './data/template/model/model.jpg'
 rects = []
+img_r = cv2.imread(path_model)
 img_tem = cv2.imread(path_model, 0)
 height, width = shape(img_tem)
 img = array(Image.open(path_model))
@@ -51,7 +52,7 @@ for rect in rects:
 
 threshold = min_tem - 0.05
 
-cv2.imwrite('./data/template/template.jpg', img_tem[tempalte[0][1]:tempalte[1][1], tempalte[0][0]:tempalte[1][0]])
+cv2.imwrite('./data/template/template.jpg', img_r[tempalte[0][1]:tempalte[1][1], tempalte[0][0]:tempalte[1][0]])
 with open('./data/template.txt', 'a') as f:
     f.write('\n')
     f.write('template.jpg' + ' ' + str(tempalte[0][0]) + ' ' + str(tempalte[0][1]) + ' ' + str(width - tempalte[1][0]) + ' ' + str(height - tempalte[1][1]) + ' ' + str(threshold))

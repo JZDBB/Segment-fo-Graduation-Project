@@ -83,8 +83,8 @@ class SegMain(object):
                 for rect_draw in rects:
                     cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
 
-                for rect_draw in test_rects:
-                    cv2.rectangle(canvas, (rect_draw[0], rect_draw[1]), (rect_draw[2], rect_draw[3]),(0,0,255),3)
+                # for rect_draw in test_rects:
+                #     cv2.rectangle(canvas, (rect_draw[0], rect_draw[1]), (rect_draw[2], rect_draw[3]),(0,0,255),3)
                 # plt.imshow(canvas)
                 # plt.show()
 
