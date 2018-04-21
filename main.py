@@ -90,7 +90,7 @@ class SegMain(object):
 
                 filename =  result_path + str(count) + '.jpg'
                 cv2.imwrite(filename, canvas)
-
+                count = count + 1
                 # save the segment picture data
                 # res_path = os.path.join(result_path, 'result.txt')
                 # with open(res_path, 'w') as f:
@@ -108,6 +108,7 @@ class SegMain(object):
                     accuracy.append(max(iou))
 
         print('total accuracy: ' + str(mean(accuracy)))
+
 
 
 
