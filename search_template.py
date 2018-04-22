@@ -3,6 +3,7 @@ from pylab import *
 import os
 import cv2
 import numpy as np
+from ImageProcess import SIFT_detect
 
 path_model = './data/template/model/model.jpg'
 rects = []
@@ -25,12 +26,20 @@ while x[1][0] > 50 and x[1][1] > 50:
 
 max_tem = 0.2
 min_tem = 0
+canvas = img_r.copy()
+count = 0
 
 for rect in rects:
-
+    count = count + 1
     path = './data/template/template_model'
     names = os.listdir(path)
-    template_t = img_tem[rect[0][1]:rect[1][1], rect[0][0]:rect[1][0]]
+    cv2.rectangle(canvas, (rect[0][0], rect[0][1]), (rect[1][0], rect[1][1]), (0, 255, 0), 3)
+    str_tem = 'template'+str(count)
+    cv2.putText(canvas, str_tem, (rect[0][0]-1, rect[0][1]-1), cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 0), 2)
+    cv2.imshow('', canvas)
+    cv2.waitKey()
+    template_t = img_r[rect[0][1]:rect[1][1], rect[0][0]:rect[1][0]]
+    keyPoints = SIFT_detect.sift_detect(template_t)
     max_ex = []
     for name in names:
         pic_path = os.path.join(path, name)
@@ -41,8 +50,7 @@ for rect in rects:
         print(np.max(res))
         max_ex.append(np.max(res))
 
-    print(np.max(max_ex))
-    print(np.min(max_ex))
+
     if max(max_ex) > max_tem and min(max_ex) > min_tem:
         max_tem = max(max_ex)
         min_tem = min(max_ex)
@@ -50,9 +58,17 @@ for rect in rects:
     else:
         continue
 
-threshold = min_tem - 0.05
+    print("-------------------------------------------")
+    print(count)
+    print(np.max(max_ex))
+    print(np.min(max_ex))
+    print(np.mean(max_ex))
+    print(keyPoints)
 
-cv2.imwrite('./data/template/template.jpg', img_r[tempalte[0][1]:tempalte[1][1], tempalte[0][0]:tempalte[1][0]])
+threshold = max_tem - 0.05
+
+cv2.imwrite('./data/template/img.jpg', canvas)
+cv2.imwrite('./data/template/template3.jpg', img_r[tempalte[0][1]:tempalte[1][1], tempalte[0][0]:tempalte[1][0]])
 with open('./data/template.txt', 'a') as f:
     f.write('\n')
     f.write('template.jpg' + ' ' + str(tempalte[0][0]) + ' ' + str(tempalte[0][1]) + ' ' + str(width - tempalte[1][0]) + ' ' + str(height - tempalte[1][1]) + ' ' + str(threshold))
