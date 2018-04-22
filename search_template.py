@@ -38,7 +38,7 @@ for rect in rects:
     cv2.putText(canvas, str_tem, (rect[0][0]-1, rect[0][1]-1), cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 0), 2)
     cv2.imshow('', canvas)
     cv2.waitKey()
-    template_t = img_r[rect[0][1]:rect[1][1], rect[0][0]:rect[1][0]]
+    template_t = img_tem[rect[0][1]:rect[1][1], rect[0][0]:rect[1][0]]
     keyPoints = SIFT_detect.sift_detect(template_t)
     max_ex = []
     for name in names:
@@ -47,16 +47,8 @@ for rect in rects:
         # imshow(template_t)
         # show()
         res = cv2.matchTemplate(img, template_t, cv2.TM_CCOEFF_NORMED)
-        print(np.max(res))
+        # print(np.max(res))
         max_ex.append(np.max(res))
-
-
-    if max(max_ex) > max_tem and min(max_ex) > min_tem:
-        max_tem = max(max_ex)
-        min_tem = min(max_ex)
-        tempalte = rect
-    else:
-        continue
 
     print("-------------------------------------------")
     print(count)
@@ -64,6 +56,13 @@ for rect in rects:
     print(np.min(max_ex))
     print(np.mean(max_ex))
     print(keyPoints)
+    if keyPoints > 800:
+        if max(max_ex) > max_tem and min(max_ex) > min_tem:
+            max_tem = max(max_ex)
+            min_tem = min(max_ex)
+            tempalte = rect
+    else:
+        continue
 
 threshold = max_tem - 0.05
 
