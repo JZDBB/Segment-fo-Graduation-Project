@@ -24,7 +24,7 @@ while x[1][0] > 50 and x[1][1] > 50:
     print('you clicked:', x)
     show()
 
-max_tem = 0.2
+max_tem = 0
 min_tem = 0
 canvas = img_r.copy()
 count = 0
