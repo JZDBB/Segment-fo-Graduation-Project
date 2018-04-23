@@ -46,7 +46,15 @@ for rect in rects:
         img = cv2.imread(pic_path, 0)
         # imshow(template_t)
         # show()
-        res = cv2.matchTemplate(img, template_t, cv2.TM_CCOEFF_NORMED)
+        res = cv2.matchTemplate(img, template_t, cv2.TM_CCOEFF)
+        plt.imshow(res, cmap='gray')
+        plt.show()
+        print(np.max(res))
+        print(cv2.minMaxLoc(res))
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        # cv2.rectangle(img, min_loc, max_loc, (0, 255, 0), 3)
+        cv2.circle(img, max_loc, 20, (0, 0, 255), -1)
+        cv2.imwrite('data.jpg', img)
         # print(np.max(res))
         max_ex.append(np.max(res))
 
@@ -56,7 +64,7 @@ for rect in rects:
     print(np.min(max_ex))
     print(np.mean(max_ex))
     print(keyPoints)
-    if keyPoints > 800:
+    if keyPoints > 600:
         if max(max_ex) > max_tem and min(max_ex) > min_tem:
             max_tem = max(max_ex)
             min_tem = min(max_ex)
