@@ -118,7 +118,7 @@ python是解析型语言和C++等编译型语言的区别：
 
 
 import cv2
-import numpy as np
+import time
 from matplotlib import pyplot as plt
 img = cv2.imread('./data/template/template_model/59290.jpg', 0)
 img2 = img.copy()
@@ -134,22 +134,26 @@ for meth in methods:
     #eval 语句用来计算存储在字符串中的有效Python 表达式
     method = eval(meth)
     # Apply template Matching
+    time_start = time.time()
     res = cv2.matchTemplate(img,template,method)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+    time_expend = time.time() - time_start
+    print('use time: %s seconds !' %str(time_expend))
+    print(min_val, max_val)
     # 使用不同的比较方法，对结果的解释不同
     # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
-    if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
-        top_left = min_loc
-    else:
-        top_left = max_loc
-        bottom_right = (top_left[0] + w, top_left[1] + h)
-    cv2.rectangle(img,top_left, bottom_right, 0, 2)
-    plt.subplot(121),plt.imshow(res,cmap = 'gray')
-    plt.title('Matching Result'), plt.xticks([]), plt.yticks([])
-    plt.subplot(122),plt.imshow(img,cmap = 'gray')
-    plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
-    plt.suptitle(meth)
-    plt.show()
+    # if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
+    #     top_left = min_loc
+    # else:
+    #     top_left = max_loc
+    #     bottom_right = (top_left[0] + w, top_left[1] + h)
+    # cv2.rectangle(img,top_left, bottom_right, 0, 2)
+    # plt.subplot(121),plt.imshow(res,cmap = 'gray')
+    # plt.title('Matching Result'), plt.xticks([]), plt.yticks([])
+    # plt.subplot(122),plt.imshow(img,cmap = 'gray')
+    # plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
+    # plt.suptitle(meth)
+    # plt.show()
 
 
 
