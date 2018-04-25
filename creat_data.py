@@ -32,10 +32,11 @@ for filename in filenames:
     with open('./data/data.txt', 'a') as f:
         f.write(pic_path + ':')
         for rect in rects:
-            # pt1, pt2, pt3, pt4 = str(rect[0][0]) + ' ' + str(rect[0][1]), str(rect[1][0]) + ' ' + str(rect[1][1]), str(
-            #     rect[2][0]) + ' ' + str(rect[2][1]), str(rect[3][0]) + ' ' + str(rect[3][1])
-            pt1_x, pt1_y, pt2_x, pt2_y = str(min(rect[0][0], rect[3][0])), str(min(rect[0][1], rect[1][1])), str(max(rect[1][0], rect[2][0])), str(max(rect[2][1], rect[3][1]))
-            f.write(pt1_x + ' ' + pt1_y + ' ' + pt2_x + ' ' + pt2_y + ';')
+            pt1, pt2, pt3, pt4 = str(rect[0][0]) + ' ' + str(rect[0][1]), str(rect[1][0]) + ' ' + str(rect[1][1]), str(
+                rect[2][0]) + ' ' + str(rect[2][1]), str(rect[3][0]) + ' ' + str(rect[3][1])
+            f.write(pt1 + ' ' + pt2 + ' ' + pt3 + ' ' + pt4 + ';')
+            # pt1_x, pt1_y, pt2_x, pt2_y = str(min(rect[0][0], rect[3][0])), str(min(rect[0][1], rect[1][1])), str(max(rect[1][0], rect[2][0])), str(max(rect[2][1], rect[3][1]))
+            # f.write(pt1_x + ' ' + pt1_y + ' ' + pt2_x + ' ' + pt2_y + ';')
         f.write('\n')
         f.close()
 
