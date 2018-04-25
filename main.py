@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from numpy import *
 import os
+import time
 
 class SegMain(object):
     # init
@@ -13,6 +14,8 @@ class SegMain(object):
         self.rects = []
 
     def Segment(self, template_path, segdata_path, result_path):
+
+        total_time = []
         count = 1
         # read the template picture
         # templates = self.data.read_images(template_path, None)
@@ -34,10 +37,13 @@ class SegMain(object):
                 # print(len(mesgs))
                 for i in range(len(mesgs)-1):
                     m = mesgs[i].split(' ')
-                    test_rects.append(array([int(m[0]), int(m[1]), int(m[2]), int(m[3])]))
+                    test_rects.append(array([[[int(m[0]), int(m[1])], [int(m[2]), int(m[3])], [int(m[4]), int(m[5])], [int(m[6]), int(m[7])]]]))
                 segdata = cv2.imread(pic_path)
                 # ajust its size to a Regulated template
                 ratio0 = 1.0
+
+                time_start = time.time()
+
                 img = segdata
                 if segdata.shape[1] < 2500:
                     ratio0 = segdata.shape[1] / 2500.0
@@ -80,6 +86,9 @@ class SegMain(object):
                                               rect_found[3][0]]]))
 
                 rects = self.rects
+
+                total_time.append(time_start - time.time())
+
                 for rect_draw in rects:
                     cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
 
@@ -103,11 +112,15 @@ class SegMain(object):
                     iou = []
                     test_rect = test_rects[i]
                     for rect in self.rects:
-                        iou.append(IoU.calculateIoU(test_rect, (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
-                    print('accuracy: ' + str(max(iou)))
-                    accuracy.append(max(iou))
+                        iou.append(IoU.calculateIoU((np.min(test_rect[:, :, 0]), np.min(test_rect[:, :, 1]), np.max(test_rect[:, :, 0]), np.max(test_rect[:, :, 1])), (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
+                    if iou == []:
+                        pass
+                    else:
+                        print('accuracy: ' + str(max(iou)))
+                        accuracy.append(max(iou))
 
         print('total accuracy: ' + str(mean(accuracy)))
+        print('total used time: %s s' %str(mean(total_time)))
 
 
 

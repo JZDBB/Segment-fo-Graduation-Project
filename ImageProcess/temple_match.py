@@ -124,7 +124,7 @@ class TempleMatch(object):
             matches = sorted(matches, key=lambda x: x[0].distance)
 
             # Ratio test, to get good matches.
-            good = [m1 for (m1, m2) in matches if m1.distance < 0.6 * m2.distance]
+            good = [m1 for (m1, m2) in matches if m1.distance < 0.7 * m2.distance]
             canvas = img.copy()
             # find homography matrix
             # 当有足够的健壮匹配点对（至少4个）时
