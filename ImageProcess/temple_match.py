@@ -61,38 +61,40 @@ class TempleMatch(object):
         score = []
         rect = []
         for template_line in self.templates:
-
-            template = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
-            begin = template_line[1]
-            end = template_line[2]
-            threshold = template_line[3]
-            width, height = template.shape[::-1]  # need debug
-            if type:
-            # recignize a picture with a sigle object
-                res = cv2.matchTemplate(img, template, method)
-                min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-                print(min_loc, min_val, max_loc, max_val)
-                if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
-                    top_left = min_loc
-                else:
-                    top_left = max_loc
-                # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
-                rect.append([top_left[0], top_left[1], top_left[0] + width, top_left[1] + height])
-                flag = True
-
-            else:
-                res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-                # print(np.max(res))
-                if np.max(res)<threshold:
-                    flag = False
-                else:
-                    loc = np.where(res >= threshold)
-                    for pt in zip(*loc[::-1]):
-                        rect.append([pt[0] - begin[0], pt[1] - begin[1], pt[0] + width + end[0], pt[1] + height + end[1]])
-                        score.append(res[pt[1], pt[0]])
-                        # print(pt)
-                        # print(res[pt[1], pt[0]])
+            if not flag:
+                template = cv2.cvtColor(template_line[0], cv2.COLOR_BGR2GRAY)
+                begin = template_line[1]
+                end = template_line[2]
+                threshold = template_line[3]
+                width, height = template.shape[::-1]  # need debug
+                if type:
+                # recignize a picture with a sigle object
+                    res = cv2.matchTemplate(img, template, method)
+                    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+                    print(min_loc, min_val, max_loc, max_val)
+                    if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
+                        top_left = min_loc
+                    else:
+                        top_left = max_loc
+                    # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
+                    rect.append([top_left[0], top_left[1], top_left[0] + width, top_left[1] + height])
                     flag = True
+
+                else:
+                    res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+                    # print(np.max(res))
+                    if np.max(res)<threshold:
+                        flag = False
+                    else:
+                        loc = np.where(res >= threshold)
+                        for pt in zip(*loc[::-1]):
+                            rect.append([pt[0] - begin[0], pt[1] - begin[1], pt[0] + width + end[0], pt[1] + height + end[1]])
+                            score.append(res[pt[1], pt[0]])
+                            # print(pt)
+                            # print(res[pt[1], pt[0]])
+                        flag = True
+            else:
+                pass
 
         return rect, score, flag
 

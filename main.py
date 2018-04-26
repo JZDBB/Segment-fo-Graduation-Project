@@ -1,4 +1,4 @@
-from ImageProcess import temple_match, data, nms, IoU
+from ImageProcess import temple_match, data, nms, IoU, get_angle
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
@@ -12,6 +12,7 @@ class SegMain(object):
         self.data = data.Data()
         self.match = temple_match.TempleMatch()
         self.rects = []
+        self.Angle = get_angle.GetAngle()
 
     def Segment(self, template_path, segdata_path, result_path):
 
@@ -79,21 +80,23 @@ class SegMain(object):
                 self.match.read_templates(template_path, None, False)
                 rect_SIFT, flag = self.match.sift_match(img_gray)
                 # print(rect_SIFT)
-                for rect_found in rect_SIFT:
-                    self.rects.append(array([[rect_found[0][0],
-                                              rect_found[1][0],
-                                              rect_found[2][0],
-                                              rect_found[3][0]]]))
-
-                rects = self.rects
 
                 total_time.append(time_start - time.time())
+                for rect_found in rect_SIFT:
+                    if abs(self.Angle.get_cos(rect_found[0][0], rect_found[1][0], rect_found[2][0]))< float(1/5):
+                        self.rects.append(array([[rect_found[0][0],
+                                                  rect_found[1][0],
+                                                  rect_found[2][0],
+                                                  rect_found[3][0]]]))
+
+                rects = self.rects
 
                 for rect_draw in rects:
                     cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
 
                 # for rect_draw in test_rects:
-                #     cv2.rectangle(canvas, (rect_draw[0], rect_draw[1]), (rect_draw[2], rect_draw[3]),(0,0,255),3)
+                #     cv2.rectangle(canvas, rect_draw,(0,0,255),3)
+
                 # plt.imshow(canvas)
                 # plt.show()
 
