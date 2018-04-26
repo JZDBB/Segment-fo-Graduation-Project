@@ -81,7 +81,7 @@ class SegMain(object):
                 rect_SIFT, flag = self.match.sift_match(img_gray)
                 # print(rect_SIFT)
 
-                total_time.append(time_start - time.time())
+                total_time.append(time.time() - time_start)
                 for rect_found in rect_SIFT:
                     if abs(self.Angle.get_cos(rect_found[0][0], rect_found[1][0], rect_found[2][0]))< float(1/5):
                         self.rects.append(array([[rect_found[0][0],
