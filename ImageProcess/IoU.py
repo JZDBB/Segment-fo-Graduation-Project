@@ -48,6 +48,27 @@ def Polygonal_IOU(img, poly1, poly2):
     return iou
 
 
+# def Polygonal_IOU(img, polylist1, polylist2):
+#     h, w = img.shape[:2]
+#     count1 = 0
+#     count2 = 0
+#     count_all = 0
+#     for x in range(w):
+#         for y in range(h):
+#             if isPointinPolygon([x, y], polylist1[i]):
+#                 count1 += 1
+#                 if isPointinPolygon([x, y], poly2):
+#                     count2 += 1
+#                     count_all += 1
+#             elif isPointinPolygon([x, y], poly2):
+#                 count2 += 1
+#             else:
+#                 pass
+#
+#     iou = count_all/(count1 + count2 - count_all)
+#     return iou
+
+
 def isPointinPolygon(point, rangelist):
     # 判断是否在外包矩形内，如果不在，直接返回false
     lnglist = []
@@ -81,7 +102,7 @@ def isPointinPolygon(point, rangelist):
             if (point12lng < point[0]):
                 count +=1
         point1 = point2
-    print(count)
+    # print(count)
     if count%2 == 0:
         return False
     else:

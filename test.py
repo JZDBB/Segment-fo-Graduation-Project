@@ -167,56 +167,77 @@ python是解析型语言和C++等编译型语言的区别：
 """
     测试点是否在多边形内
 """
-def isPointinPolygon(point, rangelist):  #[[0,0],[1,1],[0,1],[0,0]] [1,0.8]
-    # 判断是否在外包矩形内，如果不在，直接返回false
-    lnglist = []
-    latlist = []
-    for i in range(len(rangelist)-1):
-        lnglist.append(rangelist[i][0])
-        latlist.append(rangelist[i][1])
-    print(lnglist, latlist)
-    maxlng = max(lnglist)
-    minlng = min(lnglist)
-    maxlat = max(latlist)
-    minlat = min(latlist)
-    print(maxlng, minlng, maxlat, minlat)
-    if (point[0] > maxlng or point[0] < minlng or
-        point[1] > maxlat or point[1] < minlat):
-        return False
-    count = 0
-    point1 = rangelist[0]
-    for i in range(1, len(rangelist)):
-        point2 = rangelist[i]
-        # 点与多边形顶点重合
-        if (point[0] == point1[0] and point[1] == point1[1]) or (point[0] == point2[0] and point[1] == point2[1]):
-            print("在顶点上")
-            return False
-        # 判断线段两端点是否在射线两侧 不在肯定不相交 射线（-∞，lat）（lng,lat）
-        if (point1[1] < point[1] and point2[1] >= point[1]) or (point1[1] >= point[1] and point2[1] < point[1]):
-            # 求线段与射线交点 再和lat比较
-            point12lng = point2[0] - (point2[1] - point[1]) * (point2[0] - point1[0])/(point2[1] - point1[1])
-            print(point12lng)
-            # 点在多边形边上
-            if (point12lng == point[0]):
-                print("点在多边形边上")
-                return False
-            if (point12lng < point[0]):
-                count +=1
-        point1 = point2
-    print(count)
-    if count%2 == 0:
-        return False
-    else:
-        return True
+# def isPointinPolygon(point, rangelist):  #[[0,0],[1,1],[0,1],[0,0]] [1,0.8]
+#     # 判断是否在外包矩形内，如果不在，直接返回false
+#     lnglist = []
+#     latlist = []
+#     for i in range(len(rangelist)-1):
+#         lnglist.append(rangelist[i][0])
+#         latlist.append(rangelist[i][1])
+#     print(lnglist, latlist)
+#     maxlng = max(lnglist)
+#     minlng = min(lnglist)
+#     maxlat = max(latlist)
+#     minlat = min(latlist)
+#     print(maxlng, minlng, maxlat, minlat)
+#     if (point[0] > maxlng or point[0] < minlng or
+#         point[1] > maxlat or point[1] < minlat):
+#         return False
+#     count = 0
+#     point1 = rangelist[0]
+#     for i in range(1, len(rangelist)):
+#         point2 = rangelist[i]
+#         # 点与多边形顶点重合
+#         if (point[0] == point1[0] and point[1] == point1[1]) or (point[0] == point2[0] and point[1] == point2[1]):
+#             print("在顶点上")
+#             return False
+#         # 判断线段两端点是否在射线两侧 不在肯定不相交 射线（-∞，lat）（lng,lat）
+#         if (point1[1] < point[1] and point2[1] >= point[1]) or (point1[1] >= point[1] and point2[1] < point[1]):
+#             # 求线段与射线交点 再和lat比较
+#             point12lng = point2[0] - (point2[1] - point[1]) * (point2[0] - point1[0])/(point2[1] - point1[1])
+#             print(point12lng)
+#             # 点在多边形边上
+#             if (point12lng == point[0]):
+#                 print("点在多边形边上")
+#                 return False
+#             if (point12lng < point[0]):
+#                 count +=1
+#         point1 = point2
+#     print(count)
+#     if count%2 == 0:
+#         return False
+#     else:
+#         return True
+#
+# if __name__ == '__main__':
+#     print(isPointinPolygon([1852, 1000], [[703,68],[1880,60],[1852,974],[689,647], [703, 68]]))
+#     import numpy as np
+#     import cv2
+#     img = cv2.imread('./data/segmentData/67523.jpg', 0)
+#     pts = np.array([[703,68],[1880,60],[1852,974],[689,647]], np.int32)
+#     pts = pts.reshape((-1, 1, 2))
+#     cv2.polylines(img, pts, True, (0, 255, 0), 3, cv2.LINE_AA)
+#     cv2.circle(img,(800, 100), 63, (0,0,255), -1)
+#     cv2.imshow('', img)
+#     cv2.waitKey(0)
 
-if __name__ == '__main__':
-    print(isPointinPolygon([1852, 1000], [[703,68],[1880,60],[1852,974],[689,647], [703, 68]]))
-    import numpy as np
-    import cv2
-    img = cv2.imread('./data/segmentData/67523.jpg', 0)
-    pts = np.array([[703,68],[1880,60],[1852,974],[689,647]], np.int32)
-    pts = pts.reshape((-1, 1, 2))
-    cv2.polylines(img, pts, True, (0, 255, 0), 3, cv2.LINE_AA)
-    cv2.circle(img,(800, 100), 63, (0,0,255), -1)
-    cv2.imshow('', img)
-    cv2.waitKey(0)
+
+"""
+    test IoU poly
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+from ImageProcess import IoU
+
+img = 255 * np.ones((512, 512, 3), np.uint8)
+iou = IoU.Polygonal_IOU(img, [[148, 90], [330, 135], [363, 247], [113, 247], [148, 90]], [[120, 75], [320, 125], [353, 245], [103, 210], [120, 75]])
+print(iou)
+plt.imshow(img, cmap='gray')
+plt.show()
+
+
+
+
+
+
