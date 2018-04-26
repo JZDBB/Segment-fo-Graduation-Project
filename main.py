@@ -114,8 +114,9 @@ class SegMain(object):
                     iou = []
                     test_rect = test_rects[i]
                     for rect in self.rects:
-                        # iou.append(IoU.calculateIoU((np.min(test_rect[:, :, 0]), np.min(test_rect[:, :, 1]), np.max(test_rect[:, :, 0]), np.max(test_rect[:, :, 1])), (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
-                        iou.append(IoU.Polygonal_IOU(img_gray, [rect[0][0], rect[0][1], rect[0][2], rect[0][3], rect[0][0]], [test_rect[0][0], test_rect[0][1], test_rect[0][2], test_rect[0][3], test_rect[0][0]]))
+                        if abs(np.min(test_rect[:, :, 0]) - np.min(rect[:, :, 0])) < 200:
+                            # iou.append(IoU.calculateIoU((np.min(test_rect[:, :, 0]), np.min(test_rect[:, :, 1]), np.max(test_rect[:, :, 0]), np.max(test_rect[:, :, 1])), (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
+                            iou.append(IoU.Polygonal_IOU(img_gray, [rect[0][0], rect[0][1], rect[0][2], rect[0][3], rect[0][0]], [test_rect[0][0], test_rect[0][1], test_rect[0][2], test_rect[0][3], test_rect[0][0]]))
                     if iou == []:
                         pass
                     else:
