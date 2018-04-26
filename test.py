@@ -210,7 +210,7 @@ def isPointinPolygon(point, rangelist):  #[[0,0],[1,1],[0,1],[0,0]] [1,0.8]
         return True
 
 if __name__ == '__main__':
-    print(isPointinPolygon([770, 80], [[703,68],[1880,60],[1852,974],[689,647]]))
+    print(isPointinPolygon([1852, 1000], [[703,68],[1880,60],[1852,974],[689,647], [703, 68]]))
     import numpy as np
     import cv2
     img = cv2.imread('./data/segmentData/67523.jpg', 0)

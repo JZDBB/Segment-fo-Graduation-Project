@@ -12,7 +12,6 @@ class SegMain(object):
         self.data = data.Data()
         self.match = temple_match.TempleMatch()
         self.rects = []
-        self.Angle = get_angle.GetAngle()
 
     def Segment(self, template_path, segdata_path, result_path):
 
@@ -83,7 +82,7 @@ class SegMain(object):
 
                 total_time.append(time.time() - time_start)
                 for rect_found in rect_SIFT:
-                    if abs(self.Angle.get_cos(rect_found[0][0], rect_found[1][0], rect_found[2][0]))< float(1/5):
+                    if abs(get_angle.get_cos(rect_found[0][0], rect_found[1][0], rect_found[2][0]))< float(1/5):
                         self.rects.append(array([[rect_found[0][0],
                                                   rect_found[1][0],
                                                   rect_found[2][0],
@@ -115,7 +114,8 @@ class SegMain(object):
                     iou = []
                     test_rect = test_rects[i]
                     for rect in self.rects:
-                        iou.append(IoU.calculateIoU((np.min(test_rect[:, :, 0]), np.min(test_rect[:, :, 1]), np.max(test_rect[:, :, 0]), np.max(test_rect[:, :, 1])), (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
+                        # iou.append(IoU.calculateIoU((np.min(test_rect[:, :, 0]), np.min(test_rect[:, :, 1]), np.max(test_rect[:, :, 0]), np.max(test_rect[:, :, 1])), (np.min(rect[:, :, 0]), np.min(rect[:, :, 1]), np.max(rect[:, :, 0]), np.max(rect[:, :, 1]))))
+                        iou.append(IoU.Polygonal_IOU(img_gray, [rect[0][0], rect[0][0][0]], [test_rect[0][0], test_rect[0][0][0]]))
                     if iou == []:
                         pass
                     else:
