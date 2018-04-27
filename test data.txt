@@ -1,0 +1,35 @@
+系统测试：
+1-50：
+total accuracy: 0.931078373303
+total used time: 12.0014141464 s
+29.9676840925 s
+
+51-100:
+total accuracy: 0.915739135485
+total used time: 11.1689440155 s
+
+101-140:
+total accuracy: 0.936430842421
+total used time: 11.58517908095 s
+30.0798865616 s
+
+SIFT单独测试：
+1-50：
+total accuracy: 0.925849149075
+total used time: 36.1637481451 s
+
+51-100：
+total accuracy: 0.920860391909
+total used time: 98.5165888262 s
+
+
+101-140：
+
+
+
+
+
+
+
+
+./data/segmentData/63443.jpg:554 486 2165 493 2075 2971 526 3005;
