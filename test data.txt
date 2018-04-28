@@ -22,10 +22,19 @@ total used time: 36.1637481451 s
 total accuracy: 0.920860391909
 total used time: 98.5165888262 s
 
-
 101-140：
+total accuracy: 0.926199132582
+total used time: 28.8020628095 s
 
 
+模板匹配：
+51-100:
+total accuracy: 0.87688234531
+total used time: 1.55210598469 s
+
+101-140:
+total accuracy: 0.928690590162
+total used time: 1.46217230558 s
 
 
 

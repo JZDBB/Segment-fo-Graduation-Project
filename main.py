@@ -57,20 +57,20 @@ class SegMain(object):
                 # use the SIFT template match to recognise its frame     |
 
                 # normal template match
-                # self.match.read_templates(template_path, None, True)
-                # rect, score, flag = self.match.normal_match(img_gray, 0, False)
-                # pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
-                # # print(pick_rect, pick_score)
-                # for rect_found in pick_rect:
-                #     fillrect = np.array([[[rect_found[0], rect_found[1]],
-                #                           [rect_found[2], rect_found[1]],
-                #                           [rect_found[2], rect_found[3]],
-                #                           [rect_found[0], rect_found[3]]]], dtype = np.int32)
-                #     cv2.fillPoly(img_gray, fillrect, 255)
-                #     self.rects.append(array([[[rect_found[0], rect_found[1]],
-                #                               [rect_found[2], rect_found[1]],
-                #                               [rect_found[2], rect_found[3]],
-                #                               [rect_found[0], rect_found[3]]]]))
+                self.match.read_templates(template_path, None, True)
+                rect, score, flag = self.match.normal_match(img_gray, 0, False)
+                pick_rect, pick_score = nms.non_max_suppression(rect, score, 0.5)
+                # print(pick_rect, pick_score)
+                for rect_found in pick_rect:
+                    fillrect = np.array([[[rect_found[0], rect_found[1]],
+                                          [rect_found[2], rect_found[1]],
+                                          [rect_found[2], rect_found[3]],
+                                          [rect_found[0], rect_found[3]]]], dtype = np.int32)
+                    cv2.fillPoly(img_gray, fillrect, 255)
+                    self.rects.append(array([[[rect_found[0], rect_found[1]],
+                                              [rect_found[2], rect_found[1]],
+                                              [rect_found[2], rect_found[3]],
+                                              [rect_found[0], rect_found[3]]]]))
                 # plt.imshow(img_gray, cmap='gray')
                 # plt.show()
                 # print("ok")
@@ -99,7 +99,7 @@ class SegMain(object):
                 # plt.imshow(canvas)
                 # plt.show()
 
-                filename =  result_path + str(count + 100) + '.jpg'
+                filename =  result_path + str(count + 51) + '.jpg'
                 cv2.imwrite(filename, canvas)
                 count = count + 1
                 # save the segment picture data
@@ -119,12 +119,11 @@ class SegMain(object):
                             # iou.append(IoU.Polygonal_IOU(img_gray, [rect[0][0], rect[0][1], rect[0][2], rect[0][3], rect[0][0]], [test_rect[0][0], test_rect[0][1], test_rect[0][2], test_rect[0][3], test_rect[0][0]]))
                     if iou == []:
                         pass
-                    elif max(iou) < 0.88:
+                    elif max(iou) < 0.86:
                         iou = []
                         for rect in self.rects:
                             if abs(np.min(test_rect[:, :, 0]) - np.min(rect[:, :, 0])) < 200:
                                 iou.append(IoU.Polygonal_IOU(img_gray, [rect[0][0], rect[0][1], rect[0][2], rect[0][3], rect[0][0]], [test_rect[0][0], test_rect[0][1], test_rect[0][2], test_rect[0][3], test_rect[0][0]]))
-
                     else:
                         print('accuracy: ' + str(max(iou)))
                         accuracy.append(max(iou))
