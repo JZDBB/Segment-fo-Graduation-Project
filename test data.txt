@@ -5,7 +5,7 @@ total used time: 12.0014141464 s
 29.9676840925 s
 
 51-100:
-total accuracy: 0.915739135485
+total accuracy: 0.918487081616
 total used time: 11.1689440155 s
 
 101-140:
