@@ -43,6 +43,7 @@ class SegMain(object):
         filenames = os.listdir(path=segdata_path)
         for filename in filenames:
             pic_path = os.path.join(segdata_path, filename)
+            print(pic_path)
             segdata = cv2.imread(pic_path)
             # ajust its size to a Regulated template
             ratio0 = 1.0
@@ -96,13 +97,15 @@ class SegMain(object):
             rects = self.rects
 
             for rect_draw in rects:
-                cv2.polylines(canvas, rect_draw, True, (0, 255, 0), 3, cv2.LINE_AA)
+                cv2.polylines(canvas, rect_draw, True, (0, 0, 0), 12, cv2.LINE_AA)
 
             # for rect_draw in test_rects:
             #     cv2.rectangle(canvas, rect_draw,(0,0,255),3)
 
-            plt.imshow(canvas)
-            plt.show()
+            # plt.imshow(canvas)
+            # plt.show()
+            path = os.path.join('./data/result/', filename)
+            cv2.imwrite(path, canvas)
 
                 # filename =  result_path + str(count + 51) + '.jpg'
                 # cv2.imwrite(filename, canvas)
@@ -150,3 +153,6 @@ if __name__ == '__main__':
     result = "./data/result/"
     obj_seg = SegMain()
     obj_seg.Segment(template, segmentData, result)
+
+
+
